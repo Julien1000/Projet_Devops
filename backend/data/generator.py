@@ -3,7 +3,6 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import NearestNeighbors
 
 def clean_spotify_data_csv(df, features=['danceability', 'energy', 'valence', 'tempo', 'acousticness', 'instrumentalness']):
-    df['genre'].fillna('Inconnu', inplace=True)
     #changement des genres non connus à inconnu 
     df['genre'].fillna('Inconnu', inplace=True)
     #suppression des lignes avec des données vides
