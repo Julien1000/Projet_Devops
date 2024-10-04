@@ -1,15 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify Song Attributes</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Zouk machine</title>
+    <link rel="stylesheet" href="style/index.css">
 </head>
 <body>
     <div class="container">
-        <h1 class="mt-5">Spotify Song Attributes</h1>
-        {{ table|safe }}
+        <div class="title-container">
+            <h1 class="title">Zouk Machine</h1>
+        </div>
+        <div class="search-container">
+            <form class="search-bar" method="POST" action="http://0.0.0.0:5000/predict">
+                <input type="text" name="query" placeholder="Rechercher...">
+                <button type="submit">Recherche</button>
+            </form>
+        </div>
     </div>
 </body>
 </html>
+

@@ -23,7 +23,7 @@ def generate_playlist(data_source,input_song,K,features=['danceability', 'energy
     nn.fit(data_source[features])
 
     scaler = StandardScaler()
-    input_song[features] = scaler.fit_transform(input_song[features])
+    #input_song[features] = scaler.fit_transform(input_song[features])
     input_data = [input_song[features]]
 
     distances, indices = nn.kneighbors(input_data)
