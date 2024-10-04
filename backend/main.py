@@ -20,15 +20,12 @@ async def read_item():
 
 # Endpoint pour générer la playlist
 @router.post("/predict")
-async def predict( query: Optional[str] = Form(None)):
+async def predict( request, query: Optional[str] = Form(None)):
     
     # Filtrer la chanson entrée par l'utilisateur dans le dataset
     input_song = df[df['trackName'].str.contains(query, case=False)].iloc[0]
     playlist = generate_playlist(df, input_song, 9)
 
-    print(playlist)
-    return {"message":query}
-    return {"message":input_song}
     # Vérifier si la chanson existe dans les données
     if input_song.empty:
        
