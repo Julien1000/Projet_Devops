@@ -5,32 +5,37 @@ from typing import Optional
 import pandas as pd
 from data.generator import *
 
+from api_spotify.api import *
+from pymongo import MongoClient
+
+
+app = FastAPI()
+
+
 app = FastAPI()
 router = APIRouter(prefix="/api/v1")
 # Charger et nettoyer les données Spotify
 df = pd.read_csv('./data/spotify_data.csv')
 df = clean_spotify_data_csv(df)
 
+client = MongoClient("mongodb://admin:admin@mongodb:27017/")
+db = client["DevOpsDB"]
+collection = db["SpotifySongs"]
 # Configuration des templates
 templates = Jinja2Templates(directory="templates")
 
-@router.get("/prout")
-async def read_item():
-    return {"message": "Hello World"}
-
 # Endpoint pour générer la playlist
 @router.post("/predict")
-async def predict( query: Optional[str] = Form(None)):
-    
+async def predict(request: Request, query: Optional[str] = Form(None)):
     # Filtrer la chanson entrée par l'utilisateur dans le dataset
-    input_song = df[df['trackName'].str.contains(query, case=False)].iloc[0]
-    playlist = generate_playlist(df, input_song, 9)
-
-    print(playlist)
-    return {"message":query}
+    token = get_token()
+    tracks = search_by_track(query)
+    
+    return templates.TemplateResponse("search.html", {"request": request, "tracks": tracks})
     return {"message":input_song}
     # Vérifier si la chanson existe dans les données
     if input_song.empty:
+        
        
         return templates.TemplateResponse("predict.html", {"request": request, "error": "Chanson non trouvée"})
 
@@ -39,6 +44,18 @@ async def predict( query: Optional[str] = Form(None)):
     
     # Envoyer la playlist au front-end
     return templates.TemplateResponse("predict.html", {"request": request, "playlist": playlist})
+
+@router.post("/get_track_infos")
+async def predict(request: Request, track_id: str = Form(...)):
+    infos_track = get_audio_features(track_id)
+    features = infos_track.keys()
+    playlist = generate_playlist(df, infos_track, 9, features)
+    # return templates.TemplateResponse("predict.html", {"request": request, "playlist": playlist})
+    keys = infos_track.keys()
+
+    # Afficher les clés
+    print(keys)
+    return {"message:": infos_track}
 
 app.include_router(router)
 
