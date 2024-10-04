@@ -12,6 +12,7 @@ services:
       - fastapi_network
     depends_on:
       - mongodb
+    restart: on-failure
   nginx:
     image: nginx:latest
     ports:

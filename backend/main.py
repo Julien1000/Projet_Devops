@@ -14,16 +14,15 @@ df = clean_spotify_data_csv(df)
 # Configuration des templates
 templates = Jinja2Templates(directory="templates")
 
+@router.get("/prout")
+async def read_item():
+    return {"message": "Hello World"}
+
 # Endpoint pour générer la playlist
 @router.post("/predict", response_class=HTMLResponse)
 async def predict(request: Request, query: str = Form(...)):
     # Filtrer la chanson entrée par l'utilisateur dans le dataset
     input_song = df[df['trackName'].str.contains(query, case=False)].iloc[0]
-    
-    
-    
-    
-    
     # Vérifier si la chanson existe dans les données
     if input_song.empty:
        
