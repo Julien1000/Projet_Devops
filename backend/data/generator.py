@@ -2,18 +2,28 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import NearestNeighbors
 
-def clean_spotify_data_csv(df, features=['danceability', 'energy', 'valence', 'tempo', 'acousticness', 'instrumentalness']):
-    #changement des genres non connus à inconnu 
-    df['genre'].fillna('Inconnu', inplace=True)
-    #suppression des lignes avec des données vides
-    df.dropna(inplace=True)
-    #suppresion des titres en doublons
-    df.drop_duplicates(subset="id",inplace=True)
 
+
+def clean_spotify_data_mongo(mongo_data, features=['danceability', 'energy', 'valence', 'tempo', 'acousticness', 'instrumentalness']):
+    # Convert MongoDB data to DataFrame
+    df = pd.DataFrame(list(mongo_data))
+
+    # Replace NaN genres with 'Inconnu'
+    df['genre'].fillna('Inconnu', inplace=True)
+
+    # Drop rows with missing data
+    df.dropna(inplace=True)
+
+    # Remove duplicate tracks based on 'id'
+    df.drop_duplicates(subset="id", inplace=True)
+
+    # Standardize the audio features
     scaler = StandardScaler()
     df[features] = scaler.fit_transform(df[features])
-
+  
     return df
+
+
 
 
 def generate_playlist(data_source,input_song,K,features=['danceability', 'energy', 'valence', 'tempo', 'acousticness', 'instrumentalness']):
@@ -33,6 +43,8 @@ def generate_playlist(data_source,input_song,K,features=['danceability', 'energy
             "song_name": data_source.iloc[indice]['trackName'],
             "artiste_name": data_source.iloc[indice]['artistName'],
             "song_genre" : data_source.iloc[indice]['genre'],
+            "uri": data_source.iloc[indice]['uri'],
+
             "song_distance": dist
         })
     return output
