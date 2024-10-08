@@ -51,6 +51,7 @@ async def predict(request: Request, query: Optional[str] = Form(None)):
     playlist = generate_playlist(all_songs, input_song, 10)
     playlist = playlist[1:10]  
     # Passer la playlist au template HTML
+
     return templates.TemplateResponse("predict.html", {"request": request, "playlist": playlist})
 app.include_router(router)
 
