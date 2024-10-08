@@ -43,6 +43,8 @@ def generate_playlist(data_source,input_song,K,features=['danceability', 'energy
             "song_name": data_source.iloc[indice]['trackName'],
             "artiste_name": data_source.iloc[indice]['artistName'],
             "song_genre" : data_source.iloc[indice]['genre'],
+            "uri": data_source.iloc[indice]['uri'],
+
             "song_distance": dist
         })
     return output

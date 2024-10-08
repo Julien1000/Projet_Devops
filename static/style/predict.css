@@ -99,3 +99,7 @@ body {
 .back-button:hover::after {
     transform: rotate(-45deg) scale(1.2); /* Agrandissement de la flèche au survol */
 }
+.music-link a {
+    text-decoration: none;  /* Enlève le soulignement */
+    color: inherit; /* Hérite la couleur du texte du parent */
+}
