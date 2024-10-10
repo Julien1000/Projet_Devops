@@ -16,7 +16,7 @@ jobs:
 
       # 4. Build Docker Compose
       - name: Build Docker Compose
-        run: docker-compose up --build
+        run: docker-compose -f docker-compose.yaml up --build
 
       # 5. Run Docker Compose (optional step, if you want to run the services)
       - name: Run Docker Compose
