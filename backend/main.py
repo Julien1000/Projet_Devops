@@ -72,7 +72,7 @@ async def predict(request: Request, track_id: str = Form(...)):
     
     features = list(infos_track.keys())
     
-    playlist = generate_playlist(collection, infos_track, 9, features)
+    playlist = generate_playlist(all_songs, infos_track, 9, features)
     return {"message": playlist}
 
 app.include_router(router)
