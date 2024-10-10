@@ -1,5 +1,16 @@
-    runs-on: self-hosted 
+name: Docker Compose Build
 
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
     steps:
       # 1. Checkout the repository (to ensure the code is available)
       - name: Checkout repository
