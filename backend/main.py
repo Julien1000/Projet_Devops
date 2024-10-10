@@ -14,6 +14,12 @@ df = clean_spotify_data_csv(df)
 # Configuration des templates
 templates = Jinja2Templates(directory="templates")
 
+@router.get("/test")
+async def test():
+    # Process the query here and generate a response
+    # For example, let's just echo back the query
+    return {"query": "test"}
+
 # Endpoint pour générer la playlist
 @router.post("/predict")
 async def predict( request, query: Optional[str] = Form(None)):
