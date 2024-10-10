@@ -13,11 +13,18 @@ jobs:
     runs-on: self-hosted 
 
     steps:
+      # 1. Checkout the repository (to ensure the code is available)
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      # 4. Build Docker Compose
+      # 2. Move to the correct directory (root of the project)
+      - name: Set working directory to the root
+        working-directory: ${{ github.workspace }}
+
+      # 3. Build Docker Compose
       - name: Build Docker Compose
         run: docker-compose up --build
 
-      # 5. Run Docker Compose (optional step, if you want to run the services)
+      # 4. Run Docker Compose (optional)
       - name: Run Docker Compose
-        run: docker compose up
+        run: docker-compose up -d
