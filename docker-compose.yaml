@@ -4,6 +4,8 @@ services:
     build:
       context: ./backend/
       dockerfile: Dockerfile
+    environment:
+      - mongo_uri='mongodb://admin:admin@mongodb:27017/'
     ports:
       - "5000:5000"
     volumes:

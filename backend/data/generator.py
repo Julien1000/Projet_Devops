@@ -7,7 +7,6 @@ from sklearn.neighbors import NearestNeighbors
 def clean_spotify_data_mongo(mongo_data, features=['danceability', 'energy', 'valence', 'tempo', 'acousticness', 'instrumentalness']):
     # Convert MongoDB data to DataFrame
     df = pd.DataFrame(list(mongo_data))
-
     # Replace NaN genres with 'Inconnu'
     df['genre'].fillna('Inconnu', inplace=True)
 
