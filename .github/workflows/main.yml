@@ -13,7 +13,7 @@ jobs:
     runs-on: self-hosted 
 
     steps:
-      # 1. Checkout the repository (to ensure the code is available)
+       # 1. Checkout the repository (to ensure the code is available)
       - name: Checkout repository
         uses: actions/checkout@v3
 
