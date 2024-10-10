@@ -19,8 +19,8 @@ def clean_spotify_data_mongo(mongo_data, features=['danceability', 'energy', 'va
     # Standardize the audio features
     scaler = StandardScaler()
     df[features] = scaler.fit_transform(df[features])
-  
-    return df
+    
+    return (df,scaler,features)
 
 
 
