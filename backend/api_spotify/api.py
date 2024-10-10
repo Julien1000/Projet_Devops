@@ -1,14 +1,15 @@
-from dotenv import load_dotenv
+
 import base64
 import os
 from requests import post, get
 import json
 
-load_dotenv()
 
-client_id = os.getenv("CLIENT_ID")
-client_secret = os.getenv("CLIENT_SECRET")
 
+#client_id = os.getenv("CLIENT_ID")
+#client_secret = os.getenv("CLIENT_SECRET")
+client_id ="2ea0c513788c48ea9feedf19fc5e77c9"
+client_secret = "f0da29e9364046b6b717d43266fb08b7"
 def get_token():
     auth_string = f"{client_id}:{client_secret}"
     auth_bytes = auth_string.encode('utf-8')
@@ -120,38 +121,29 @@ def search_by_track_and_artist(token, track, artist, market="FR"):
     else:
         print(f"Erreur {response.status_code}: {response.content}")
 
-token = get_token()
-tracks = search_by_track_and_artist(token, track='0 to 100', artist='Sidhu Moose Wala', market="US")
 
-if tracks:
-    track = tracks[0]
-    track_id = track['id']
+def test(id):
+    token = get_token()
+    tracks = search_by_track_and_artist(token, track='0 to 100', artist='Sidhu Moose Wala', market="US")
 
-    url = f"https://api.spotify.com/v1/audio-features/{track_id}"
-    headers = get_auth_header(token)
-    response = get(url, headers=headers)
+    if tracks:
+        track = tracks[0]
+        track_id = track['id']
 
+        url = f"https://api.spotify.com/v1/audio-features/{track_id}"
+        headers = get_auth_header(token)
+        response = get(url, headers=headers)
+
+        if response.status_code == 200:
+            response_json = json.loads(response.content)
+
+            print(response_json)
+
+
+def test2(id):
+    url = f"https://embed.spotify.com/oembed?url=https://open.spotify.com/track/{id}"
+    response = get(url)
     if response.status_code == 200:
-        response_json = json.loads(response.content)
-    
-        print(f"trackName: {track['name']}")
-        print(f"artistName: {track['artists'][0]['name']}")
-        print(f"msPlayed: {track['duration_ms']}")
-        print(f"genre: {', '.join(get_artist_genres(token, track['artists'][0]['id']))}")
-        print(f"danceability: {response_json['danceability']}")
-        print(f"energy: {response_json['energy']}")
-        print(f"key: {response_json['key']}")
-        print(f"loudness: {response_json['loudness']}")
-        print(f"mode: {response_json['mode']}")
-        print(f"speechiness: {response_json['speechiness']}")
-        print(f"acousticness: {response_json['acousticness']}")
-        print(f"instrumentalness: {response_json['instrumentalness']}")
-        print(f"liveness: {response_json['liveness']}")
-        print(f"valence: {response_json['valence']}")
-        print(f"tempo: {response_json['tempo']}")
-        print(f"id: {response_json['id']}")
-        print(f"uri: {response_json['uri']}")
-        print(f"track_href: {response_json['track_href']}")
-        print(f"analysis_url: {response_json['analysis_url']}")
-        print(f"duration_ms: {response_json['duration_ms']}")
-        print(f"time_signature: {response_json['time_signature']}")
+        response_json = json.loads(response.content)    
+        return response_json['thumbnail_url']
+print(test2("0XZ5gv6EBByIEuSOIiYaon"))

@@ -1,3 +1,5 @@
 fastapi[standard]
 pandas
 scikit-learn
+pymongo
+requests

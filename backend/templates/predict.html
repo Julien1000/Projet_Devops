@@ -4,27 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Musique Similaire</title>
-    <link rel="stylesheet" href="../style/predict.css">
+    <link rel="stylesheet" href="/style/predict.css">
 </head>
 <body>
-    <a href="../index.html" class="back-button">
-        Retour
-    </a>
+    <a href="/index.html" class="back-button">Retour</a>
     
     <div class="container">
         <h1 class="title">Musiques similaires</h1>
         <div class="grid">
-            <a href="page1.html" class="music-link"><div class="music-box">Musique 1</div></a>
-            <a href="page2.html" class="music-link"><div class="music-box">Musique 2</div></a>
-            <a href="page3.html" class="music-link"><div class="music-box">Musique 3</div></a>
-            <a href="page4.html" class="music-link"><div class="music-box">Musique 4</div></a>
-            <a href="page5.html" class="music-link"><div class="music-box">Musique 5</div></a>
-            <a href="page6.html" class="music-link"><div class="music-box">Musique 6</div></a>
-            <a href="page7.html" class="music-link"><div class="music-box">Musique 7</div></a>
-            <a href="page8.html" class="music-link"><div class="music-box">Musique 8</div></a>
-            <a href="page9.html" class="music-link"><div class="music-box">Musique 9</div></a>
+            {% for song in playlist %}
+                <div class="music-link">
+                    <!-- Lien vers la musique -->
+                    <a href="https://open.spotify.com/track/{{ song.uri.split(':')[2] }}" class="music-box">
+                        {{ song.song_name }} - {{ song.artiste_name }}
+                    </a>
+                </div>
+            {% endfor %}
         </div>
     </div>
 </body>
-
 </html>
