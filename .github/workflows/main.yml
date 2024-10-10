@@ -1,0 +1,23 @@
+name: Docker Compose Build
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+
+      # 4. Build Docker Compose
+      - name: Build Docker Compose
+        run: docker-compose build
+
+      # 5. Run Docker Compose (optional step, if you want to run the services)
+      - name: Run Docker Compose
+        run: docker-compose up -d
