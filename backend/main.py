@@ -8,10 +8,6 @@ from data.generator import *
 from api_spotify.api import *
 from pymongo import MongoClient
 
-
-app = FastAPI()
-
-
 app = FastAPI()
 router = APIRouter(prefix="/api/v1")
 # Charger et nettoyer les données Spotify
@@ -48,14 +44,11 @@ async def predict(request: Request, query: Optional[str] = Form(None)):
 @router.post("/get_track_infos")
 async def predict(request: Request, track_id: str = Form(...)):
     infos_track = get_audio_features(track_id)
-    features = infos_track.keys()
+    
+    features = list(infos_track.keys())
+    
     playlist = generate_playlist(df, infos_track, 9, features)
-    # return templates.TemplateResponse("predict.html", {"request": request, "playlist": playlist})
-    keys = infos_track.keys()
-
-    # Afficher les clés
-    print(keys)
-    return {"message:": infos_track}
+    return {"message": playlist}
 
 app.include_router(router)
 

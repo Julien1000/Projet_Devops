@@ -131,5 +131,26 @@ def get_audio_features(track_id):
 
     if response.status_code == 200:
         audio_features_json = json.loads(response.content)
-        return audio_features_json
+
+        numerical_features = {
+            'danceability': audio_features_json['danceability'],
+            'energy': audio_features_json['energy'],
+            'key': audio_features_json['key'],
+            'loudness': audio_features_json['loudness'],
+            'mode': audio_features_json['mode'],
+            'speechiness': audio_features_json['speechiness'],
+            'acousticness': audio_features_json['acousticness'],
+            'instrumentalness': audio_features_json['instrumentalness'],
+            'liveness': audio_features_json['liveness'],
+            'valence': audio_features_json['valence'],
+            # 'tempo': audio_features_json['tempo'],
+            # 'duration_ms': audio_features_json['duration_ms'],
+            # 'time_signature': audio_features_json['time_signature'],
+        }
+
+        return numerical_features   
+
+    else:
+        return {"error": response.status_code, "message": response.text}
+
     
