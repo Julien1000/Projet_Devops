@@ -10,14 +10,9 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted 
 
     steps:
-      # Step 2: Install Docker (Docker Compose is part of Docker CLI in newer versions)
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get update
-          sudo apt-get install docker-compose-plugin
 
       # 4. Build Docker Compose
       - name: Build Docker Compose
