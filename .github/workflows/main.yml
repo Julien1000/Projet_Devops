@@ -17,20 +17,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Clean up existing Docker containers, networks, and volumes
-      - name: Clean up Docker containers, networks, and volumes
-        run: |
-          docker-compose down --volumes --remove-orphans
-          docker system prune -f --volumes
-
       # 3. Build Docker Compose
       - name: Build Docker Compose
         run: |
           cd $GITHUB_WORKSPACE
-          docker-compose up --build
-
-      # 4. Run Docker Compose
-      - name: Run Docker Compose
-        run: |
-          cd $GITHUB_WORKSPACE
-          docker-compose up -d
+          docker-compose up --build -d
