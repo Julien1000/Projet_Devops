@@ -27,13 +27,13 @@ def clean_spotify_data_mongo(mongo_data, features=['danceability', 'energy', 'va
 
 
 def generate_playlist(data_source,input_song,K,features=['danceability', 'energy', 'valence', 'tempo', 'acousticness', 'instrumentalness']):
-
     nn = NearestNeighbors(n_neighbors=K,algorithm="ball_tree")
     nn.fit(data_source[features])
 
     scaler = StandardScaler()
     #input_song[features] = scaler.fit_transform(input_song[features])
-    input_data = [input_song[features]]
+    
+    input_data = [[input_song[feature] for feature in features]]
 
     distances, indices = nn.kneighbors(input_data)
 
@@ -48,4 +48,3 @@ def generate_playlist(data_source,input_song,K,features=['danceability', 'energy
             "song_distance": dist
         })
     return output
-

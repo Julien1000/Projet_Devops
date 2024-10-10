@@ -29,7 +29,8 @@ def get_token():
 def get_auth_header(token):
     return {"Authorization": f"Bearer {token}"}
 
-def get_artist_id(token, artist_name):
+def get_artist_id(artist_name):
+    token = get_token()
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
     query = f"?q={artist_name}&type=artist&limit=1&market=FR"
@@ -48,7 +49,8 @@ def get_artist_id(token, artist_name):
         print(f"Erreur {response.status_code}: {response.content}")
         return None
 
-def get_artist_tracks(token, artist_id):
+def get_artist_tracks(artist_id):
+    token = get_token()
     url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?market=FR"
     headers = get_auth_header(token)
     
@@ -61,7 +63,8 @@ def get_artist_tracks(token, artist_id):
         print(f"Erreur {response.status_code}: {response.content}")
         return None
     
-def get_artist_genres(token, artist_id):
+def get_artist_genres(artist_id):
+    token = get_token()
     url = f"https://api.spotify.com/v1/artists/{artist_id}"
     headers = get_auth_header(token)
     
@@ -74,10 +77,11 @@ def get_artist_genres(token, artist_id):
         print(f"Erreur {response.status_code}: {response.content}")
         return None
 
-def search_by_track(token, track, market="FR"):
+def search_by_track(track, market="FR"):
+    token = get_token()
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
-    query = f"?q=track:{track}&type=track&limit=5&market={market}"
+    query = f"?q=track:{track}&type=track&limit=9&market={market}"
     
     query_url = url + query
     response = get(query_url, headers=headers)
@@ -85,16 +89,14 @@ def search_by_track(token, track, market="FR"):
     if response.status_code == 200:
         response_json = json.loads(response.content)
         tracks = response_json['tracks']['items']
-        for track in tracks:
-            print(f"- {track['name']}, (Artiste: {track['artists'][0]['name']}) (Popularité: {track['popularity']})")
         return tracks
     else:
         print(f"Erreur {response.status_code}: {response.content}")
 
-def search_by_artist(token, artist):
-    artist_id = get_artist_id(token, artist)
+def search_by_artist(artist):
+    artist_id = get_artist_id(artist)
     if artist_id:
-        tracks = get_artist_tracks(token, artist_id)
+        tracks = get_artist_tracks(artist_id)
         if tracks:
             print(f"Top tracks de {artist}:")
             for track in tracks:
@@ -103,7 +105,8 @@ def search_by_artist(token, artist):
     else:    
         print("Artiste non trouvé.")
 
-def search_by_track_and_artist(token, track, artist, market="FR"):
+def search_by_track_and_artist(track, artist, market="FR"):
+    token = get_token()
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
     query = f"?q=track:{track} artist:{artist}&type=track&limit=5&market={market}"
@@ -120,38 +123,34 @@ def search_by_track_and_artist(token, track, artist, market="FR"):
     else:
         print(f"Erreur {response.status_code}: {response.content}")
 
-token = get_token()
-tracks = search_by_track_and_artist(token, track='0 to 100', artist='Sidhu Moose Wala', market="US")
-
-if tracks:
-    track = tracks[0]
-    track_id = track['id']
-
+def get_audio_features(track_id):
+    token = get_token()
     url = f"https://api.spotify.com/v1/audio-features/{track_id}"
     headers = get_auth_header(token)
     response = get(url, headers=headers)
 
     if response.status_code == 200:
-        response_json = json.loads(response.content)
+        audio_features_json = json.loads(response.content)
+
+        numerical_features = {
+            'danceability': audio_features_json['danceability'],
+            'energy': audio_features_json['energy'],
+            'key': audio_features_json['key'],
+            'loudness': audio_features_json['loudness'],
+            'mode': audio_features_json['mode'],
+            'speechiness': audio_features_json['speechiness'],
+            'acousticness': audio_features_json['acousticness'],
+            'instrumentalness': audio_features_json['instrumentalness'],
+            'liveness': audio_features_json['liveness'],
+            'valence': audio_features_json['valence'],
+            # 'tempo': audio_features_json['tempo'],
+            # 'duration_ms': audio_features_json['duration_ms'],
+            # 'time_signature': audio_features_json['time_signature'],
+        }
+
+        return numerical_features   
+
+    else:
+        return {"error": response.status_code, "message": response.text}
+
     
-        print(f"trackName: {track['name']}")
-        print(f"artistName: {track['artists'][0]['name']}")
-        print(f"msPlayed: {track['duration_ms']}")
-        print(f"genre: {', '.join(get_artist_genres(token, track['artists'][0]['id']))}")
-        print(f"danceability: {response_json['danceability']}")
-        print(f"energy: {response_json['energy']}")
-        print(f"key: {response_json['key']}")
-        print(f"loudness: {response_json['loudness']}")
-        print(f"mode: {response_json['mode']}")
-        print(f"speechiness: {response_json['speechiness']}")
-        print(f"acousticness: {response_json['acousticness']}")
-        print(f"instrumentalness: {response_json['instrumentalness']}")
-        print(f"liveness: {response_json['liveness']}")
-        print(f"valence: {response_json['valence']}")
-        print(f"tempo: {response_json['tempo']}")
-        print(f"id: {response_json['id']}")
-        print(f"uri: {response_json['uri']}")
-        print(f"track_href: {response_json['track_href']}")
-        print(f"analysis_url: {response_json['analysis_url']}")
-        print(f"duration_ms: {response_json['duration_ms']}")
-        print(f"time_signature: {response_json['time_signature']}")
