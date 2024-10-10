@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Musique Similaire</title>
-    <link rel="stylesheet" href="/style/predict.css">
-</head>
-<body>
+    <link rel="stylesheet" href="/style/predict.css" />
+  </head>
+  <body>
     <a href="/index.html" class="back-button">Retour</a>
-    
+
     <div class="container">
-        <h1 class="title">Musiques similaires</h1>
-        <div class="grid">
-            {% for song in playlist %}
-                <div class="music-link">
-                    <!-- Lien vers la musique -->
-                    <a href="https://open.spotify.com/track/{{ song.uri.split(':')[2] }}" class="music-box">
-                        {{ song.song_name }} - {{ song.artiste_name }}
-                    </a>
-                </div>
-            {% endfor %}
+      <h1 class="title">Musiques similaires</h1>
+      <div class="grid">
+        {% for song in playlist %}
+        <div class="music-link">
+          <!-- Lien vers la musique -->
+          <a
+            href="https://open.spotify.com/track/{{ song.uri.split(':')[2] }}"
+            class="music-box"
+          >
+            {{ song.song_name }} - {{ song.artiste_name }}
+          </a>
         </div>
+        {% endfor %}
+      </div>
     </div>
-</body>
+  </body>
 </html>

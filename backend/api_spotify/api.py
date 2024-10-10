@@ -30,7 +30,8 @@ def get_token():
 def get_auth_header(token):
     return {"Authorization": f"Bearer {token}"}
 
-def get_artist_id(token, artist_name):
+def get_artist_id(artist_name):
+    token = get_token()
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
     query = f"?q={artist_name}&type=artist&limit=1&market=FR"
@@ -49,7 +50,8 @@ def get_artist_id(token, artist_name):
         print(f"Erreur {response.status_code}: {response.content}")
         return None
 
-def get_artist_tracks(token, artist_id):
+def get_artist_tracks(artist_id):
+    token = get_token()
     url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?market=FR"
     headers = get_auth_header(token)
     
@@ -62,7 +64,8 @@ def get_artist_tracks(token, artist_id):
         print(f"Erreur {response.status_code}: {response.content}")
         return None
     
-def get_artist_genres(token, artist_id):
+def get_artist_genres(artist_id):
+    token = get_token()
     url = f"https://api.spotify.com/v1/artists/{artist_id}"
     headers = get_auth_header(token)
     
@@ -75,10 +78,11 @@ def get_artist_genres(token, artist_id):
         print(f"Erreur {response.status_code}: {response.content}")
         return None
 
-def search_by_track(token, track, market="FR"):
+def search_by_track(track, market="FR"):
+    token = get_token()
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
-    query = f"?q=track:{track}&type=track&limit=5&market={market}"
+    query = f"?q=track:{track}&type=track&limit=9&market={market}"
     
     query_url = url + query
     response = get(query_url, headers=headers)
@@ -86,16 +90,14 @@ def search_by_track(token, track, market="FR"):
     if response.status_code == 200:
         response_json = json.loads(response.content)
         tracks = response_json['tracks']['items']
-        for track in tracks:
-            print(f"- {track['name']}, (Artiste: {track['artists'][0]['name']}) (Popularité: {track['popularity']})")
         return tracks
     else:
         print(f"Erreur {response.status_code}: {response.content}")
 
-def search_by_artist(token, artist):
-    artist_id = get_artist_id(token, artist)
+def search_by_artist(artist):
+    artist_id = get_artist_id(artist)
     if artist_id:
-        tracks = get_artist_tracks(token, artist_id)
+        tracks = get_artist_tracks(artist_id)
         if tracks:
             print(f"Top tracks de {artist}:")
             for track in tracks:
@@ -104,7 +106,8 @@ def search_by_artist(token, artist):
     else:    
         print("Artiste non trouvé.")
 
-def search_by_track_and_artist(token, track, artist, market="FR"):
+def search_by_track_and_artist(track, artist, market="FR"):
+    token = get_token()
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
     query = f"?q=track:{track} artist:{artist}&type=track&limit=5&market={market}"
@@ -133,17 +136,13 @@ def test(id):
         url = f"https://api.spotify.com/v1/audio-features/{track_id}"
         headers = get_auth_header(token)
         response = get(url, headers=headers)
+def get_audio_features(track_id):
+    token = get_token()
+    url = f"https://api.spotify.com/v1/audio-features/{track_id}"
+    headers = get_auth_header(token)
+    response = get(url, headers=headers)
 
-        if response.status_code == 200:
-            response_json = json.loads(response.content)
-
-            print(response_json)
-
-
-def test2(id):
-    url = f"https://embed.spotify.com/oembed?url=https://open.spotify.com/track/{id}"
-    response = get(url)
     if response.status_code == 200:
-        response_json = json.loads(response.content)    
-        return response_json['thumbnail_url']
-print(test2("0XZ5gv6EBByIEuSOIiYaon"))
+        response_json = json.loads(response.content)
+
+        print(response_json)

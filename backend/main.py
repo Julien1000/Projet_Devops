@@ -4,6 +4,8 @@ from fastapi.templating import Jinja2Templates
 from typing import Optional
 import pandas as pd
 from data.generator import *
+
+from api_spotify.api import *
 import csv
 from pymongo import MongoClient
 from fastapi.templating import Jinja2Templates
@@ -21,7 +23,7 @@ templates = Jinja2Templates(directory="templates")
 
 client = MongoClient(f'mongodb://admin:admin@mongodb:27017/')
 
-db = client['devOpsBDD']  # Remplacez par le nom de votre base de données
+db = client['DevOpsDB']  # Remplacez par le nom de votre base de données
 collection = db['SpotifySongs']
 
 all_songs = list(collection.find())
@@ -44,6 +46,9 @@ def fetc_img(id):
         return response_json['thumbnail_url']
 
 
+client = MongoClient("mongodb://admin:admin@mongodb:27017/")
+db = client["DevOpsDB"]
+collection = db["SpotifySongs"]
 # Configuration des templates
 templates = Jinja2Templates(directory="templates")
 
@@ -58,15 +63,30 @@ async def random(request: Request,):
 
     return templates.TemplateResponse("out.html", {"request": request , "playlist": playlist , "input_song":input_song , "image": img_uri})
 
+# Endpoint pour générer la playlist
 @router.post("/predict", response_class=HTMLResponse)
 async def predict(request: Request, query: Optional[str] = Form(None)):
-    input_song = all_songs[all_songs['trackName'].notna() & all_songs['trackName'].str.contains(query, case=False)].iloc[0]
-    img_uri = fetc_img(input_song.id)
-    playlist = generate_playlist(all_songs, input_song, 10)
-    playlist = playlist[1:10]  
-    # Passer la playlist au template HTML
+    filtered_songs = all_songs[all_songs['trackName'].notna() & all_songs['trackName'].str.contains(query, case=False)]
 
-    return templates.TemplateResponse("out.html", {"request": request, "playlist": playlist , "input_song":input_song , "image": img_uri})
+    if not filtered_songs.empty:
+        input_song = filtered_songs.iloc[0]
+        img_uri = fetc_img(img_uri)
+        playlist = generate_playlist(all_songs, input_song, 10)
+        playlist = playlist[1:10]  
+        return templates.TemplateResponse("out.html", {"request": request, "playlist": playlist , "input_song":input_song , "image": img_uri})
+    else:
+        return templates.TemplateResponse("err.html" , {"request": request, "message": "song introuvable"})
+   
+    
+@router.post("/get_track_infos")
+async def predict(request: Request, track_id: str = Form(...)):
+    infos_track = get_audio_features(track_id)
+    
+    features = list(infos_track.keys())
+    
+    playlist = generate_playlist(all_songs, infos_track, 9, features)
+    return {"message": playlist}
+
 app.include_router(router)
 
 
