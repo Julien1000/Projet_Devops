@@ -13,12 +13,28 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      # 1. Checkout the repository (to ensure the code is available)
+      # 1. Adjust permissions on existing files (if necessary)
+      - name: Adjust file permissions
+        run: sudo chmod -R 777 $GITHUB_WORKSPACE
+
+      # 2. Checkout the repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Build Docker Compose (using cd to ensure you're in the correct directory)
+      # 3. Clean up Docker containers, networks, and volumes
+      - name: Clean up Docker resources
+        run: |
+          docker-compose down --volumes --remove-orphans
+          docker system prune -f --volumes
+
+      # 4. Build Docker Compose
       - name: Build Docker Compose
         run: |
           cd $GITHUB_WORKSPACE
-          docker-compose up --build -d
+          docker-compose up --build
+
+      # 5. Run Docker Compose
+      - name: Run Docker Compose
+        run: |
+          cd $GITHUB_WORKSPACE
+          docker-compose up -d
