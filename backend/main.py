@@ -22,7 +22,7 @@ templates = Jinja2Templates(directory="templates")
 
 client = MongoClient(f'mongodb://admin:admin@mongodb:27017/')
 
-db = client['devOpsBDD']  # Remplacez par le nom de votre base de données
+db = client['DevOpsDB']  # Remplacez par le nom de votre base de données
 collection = db['SpotifySongs']
 
 all_songs = list(collection.find())
@@ -45,39 +45,27 @@ db = client["DevOpsDB"]
 collection = db["SpotifySongs"]
 # Configuration des templates
 templates = Jinja2Templates(directory="templates")
-
-# Endpoint pour générer la playlist
-@router.post("/predict")
-async def predict(request: Request, query: Optional[str] = Form(None)):
-    # Filtrer la chanson entrée par l'utilisateur dans le dataset
-    token = get_token()
-    tracks = search_by_track(query)
     
-    return templates.TemplateResponse("search.html", {"request": request, "tracks": tracks})
-    return {"message":input_song}
-    # Vérifier si la chanson existe dans les données
-    if input_song.empty:
-        
-       
-        return templates.TemplateResponse("predict.html", {"request": request, "error": "Chanson non trouvée"})
-
-    # Générer une playlist basée sur la chanson d'entrée
-    playlist = generate_playlist(df, input_song, 9)
-    
-    # Envoyer la playlist au front-end
+# Envoyer la playlist au front-end
 @router.get("/prout")
 async def read_item():
     return {"message": "Hello World"}
 
+# Endpoint pour générer la playlist
 @router.post("/predict", response_class=HTMLResponse)
 async def predict(request: Request, query: Optional[str] = Form(None)):
-    input_song = all_songs[all_songs['trackName'].notna() & all_songs['trackName'].str.contains(query, case=False)].iloc[0]
-    playlist = generate_playlist(all_songs, input_song, 10)
-    playlist = playlist[1:10]  
-    # Passer la playlist au template HTML
+    filtered_songs = all_songs[all_songs['trackName'].notna() & all_songs['trackName'].str.contains(query, case=False)]
 
-    return templates.TemplateResponse("predict.html", {"request": request, "playlist": playlist})
+    if not filtered_songs.empty:
+        input_song = filtered_songs.iloc[0]
+        playlist = generate_playlist(all_songs, input_song, 10)
+        playlist = playlist[1:10]  
 
+        return templates.TemplateResponse("predict.html", {"request": request, "playlist": playlist})
+    else:
+        tracks = search_by_track(query)
+        return templates.TemplateResponse("search.html", {"request": request, "tracks": tracks})
+    
 @router.post("/get_track_infos")
 async def predict(request: Request, track_id: str = Form(...)):
     infos_track = get_audio_features(track_id)
