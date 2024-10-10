@@ -10,21 +10,21 @@ on:
 
 jobs:
   build:
-    runs-on: self-hosted 
+    runs-on: self-hosted
 
     steps:
-       # 1. Checkout the repository (to ensure the code is available)
+      # 1. Checkout the repository (to ensure the code is available)
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2. Move to the correct directory (root of the project)
-      - name: Set working directory to the root
-        working-directory: ${{ github.workspace }}
-
-      # 3. Build Docker Compose
+      # 2. Build Docker Compose (using cd to ensure you're in the correct directory)
       - name: Build Docker Compose
-        run: docker-compose up --build
+        run: |
+          cd $GITHUB_WORKSPACE
+          docker-compose up --build
 
-      # 4. Run Docker Compose (optional)
+      # 3. Run Docker Compose (optional, using cd as well)
       - name: Run Docker Compose
-        run: docker-compose up -d
+        run: |
+          cd $GITHUB_WORKSPACE
+          docker-compose up -d
