@@ -11,10 +11,5 @@
         working-directory: ${{ github.workspace }}
       # 3. Build Docker Compose
       - name: Build Docker Compose
-        run: docker-compose up --build
+        run: docker-compose up --build -d
 
-      # 5. Run Docker Compose (optional step, if you want to run the services)
-      # 4. Run Docker Compose (optional)
-      - name: Run Docker Compose
-        run: docker compose up
-        run: docker-compose up -d
