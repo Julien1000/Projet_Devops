@@ -21,10 +21,4 @@ jobs:
       - name: Build Docker Compose
         run: |
           cd $GITHUB_WORKSPACE
-          docker-compose up --build
-
-      # 3. Run Docker Compose (optional, using cd as well)
-      - name: Run Docker Compose
-        run: |
-          cd $GITHUB_WORKSPACE
-          docker-compose up -d
+          docker-compose up --build -d
