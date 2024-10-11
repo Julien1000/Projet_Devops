@@ -1,4 +1,36 @@
-name: Build
+name: Build and Analyze with SonarQube
+ 
+on:
+  push:
+    branches:
+      - main
+ 
+jobs:
+  build:
+    runs-on: ubuntu-latest
+ 
+    steps:
+      # Étape 1 : Checkout du code source
+      - uses: actions/checkout@v2
+ 
+      # Étape 2 : Lancer SonarQube dans un conteneur Docker
+      - name: Start SonarQube
+        run: |
+          docker run -d --name sonarqube -p 9000:9000 sonarqube:lts
+          # Attendre que SonarQube soit prêt
+          sleep 30
+ 
+      # Étape 3 : Analyser le code avec SonarQube
+      - name: Run SonarQube Analysis
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: http://localhost:9000
+        run: |
+          sonar-scanner \
+            -Dsonar.projectKey=my_project_key \
+            -Dsonar.sources=. \
+            -Dsonar.host.url=$SONAR_HOST_URL \
+            -Dsonar.login=$SONAR_TOKENname: Build
 
 on:
   push:
