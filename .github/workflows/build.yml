@@ -20,7 +20,15 @@ jobs:
           # Attendre que SonarQube soit prêt
           sleep 30
  
-      # Étape 3 : Analyser le code avec SonarQube
+      # Étape 3 : Installer SonarScanner
+      - name: Install SonarScanner
+        run: |
+          curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.6.2.2472-linux.zip
+          unzip sonar-scanner-cli.zip
+          mv sonar-scanner-4.6.2.2472-linux sonar-scanner
+          export PATH="$PATH:$(pwd)/sonar-scanner/bin"
+ 
+      # Étape 4 : Exécuter SonarScanner pour analyser le projet
       - name: Run SonarQube Analysis
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -30,4 +38,4 @@ jobs:
             -Dsonar.projectKey=my_project_key \
             -Dsonar.sources=. \
             -Dsonar.host.url=$SONAR_HOST_URL \
-            -Dsonar.login=$SONAR_TOKENname: Build
+            -Dsonar.login=$SONAR_TOKEN
